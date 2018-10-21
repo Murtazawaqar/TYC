@@ -12,6 +12,8 @@ public class AddChildPojo
 	private String lastName;
 	private Date dob;
 	private String gender;
+	private double latitude;
+	private double longitude;
 	private int status;
 	private String parentEmail;
 	private String branchName;
@@ -45,6 +47,18 @@ public class AddChildPojo
 	}
 	public void setGender(String gender) {
 		this.gender = gender;
+	}
+	public double getLatitude() {
+		return latitude;
+	}
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+	public double getLongitude() {
+		return longitude;
+	}
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
 	}
 	public int getStatus() {
 		return status;

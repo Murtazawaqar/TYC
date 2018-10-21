@@ -1,10 +1,7 @@
 package com.burgtech.trackyourchild.model;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -13,12 +10,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotBlank;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -27,29 +21,23 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@Table(name = "branch")
+@Table(name = "branch_driver")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = {"createdAt","updatedAt"}, allowGetters=true)
-public class Branch 
+public class BranchDriver 
 {
 	@Id
-	@GeneratedValue( strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
 	private Long id;
 	
-	@NotBlank
-	@Column(nullable = false, unique = true)
-	private String name;
+	@ManyToOne
+	@JoinColumn(name = "branchId")
+	private Branch branch;
 	
-	private String address;
-	
-	private String city;
-
-	@DecimalMin("0.0")
-	private double latitude;
-	
-	@DecimalMin("0.0")
-	private double longitude;
+	@ManyToOne
+	@JoinColumn(name = "driverId")
+	private User driver;
 	
 	private int status;
 	
@@ -62,13 +50,6 @@ public class Branch
 	@Temporal(TemporalType.TIMESTAMP)
 	@LastModifiedDate
 	private Date updatedAt;
-	
-	@ManyToOne
-	@JoinColumn(name = "schoolId")
-	private School school;
-	
-//	@OneToMany (mappedBy = "branch",cascade = CascadeType.ALL)
-//	List<BranchDriver> branchDriver = new ArrayList<BranchDriver>();
 
 	public Long getId() {
 		return id;
@@ -78,44 +59,20 @@ public class Branch
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public Branch getBranch() {
+		return branch;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setBranch(Branch branch) {
+		this.branch = branch;
 	}
 
-	public String getAddress() {
-		return address;
+	public User getDriver() {
+		return driver;
 	}
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public String getCity() {
-		return city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public double getLatitude() {
-		return latitude;
-	}
-
-	public void setLatitude(double latitude) {
-		this.latitude = latitude;
-	}
-
-	public double getLongitude() {
-		return longitude;
-	}
-
-	public void setLongitude(double longitude) {
-		this.longitude = longitude;
+	public void setDriver(User driver) {
+		this.driver = driver;
 	}
 
 	public int getStatus() {
@@ -141,21 +98,5 @@ public class Branch
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-
-	public School getSchool() {
-		return school;
-	}
-
-	public void setSchool(School school) {
-		this.school = school;
-	}
-
-//	public List<BranchDriver> getBranchDriver() {
-//		return branchDriver;
-//	}
-//
-//	public void setBranchDriver(List<BranchDriver> branchDriver) {
-//		this.branchDriver = branchDriver;
-//	}
-
+	
 }

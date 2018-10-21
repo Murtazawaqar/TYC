@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -44,6 +45,12 @@ public class Child
 	
 	private int status;
 	
+	@DecimalMin("0.0")
+	private double latitude;
+	
+	@DecimalMin("0.0")
+	private double longitude;
+	
 	@ManyToOne
 	@JoinColumn(name = "parentId")
 	private User parent;
@@ -51,6 +58,10 @@ public class Child
 	@ManyToOne
 	@JoinColumn(name = "branchId")
 	private Branch branch;
+	
+	@ManyToOne
+	@JoinColumn(name = "driverId")
+	private User driver; 
 	
 	@Column(nullable = false, updatable = false)
 	@Temporal(TemporalType.TIMESTAMP)
@@ -101,6 +112,22 @@ public class Child
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
+	
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+
+	public double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
 
 	public int getStatus() {
 		return status;
@@ -124,6 +151,14 @@ public class Child
 
 	public void setBranch(Branch branch) {
 		this.branch = branch;
+	}
+
+	public User getDriver() {
+		return driver;
+	}
+
+	public void setDriver(User driver) {
+		this.driver = driver;
 	}
 
 	public Date getCreatedAt() {

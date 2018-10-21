@@ -1,7 +1,10 @@
 package com.burgtech.trackyourchild.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -9,12 +12,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -57,12 +59,6 @@ public class User
 	
 	private String city;
 	
-	@DecimalMin("0.0")
-	private double latitude;
-	
-	@DecimalMin("0.0")
-	private double longitude;
-	
 	private int status;
 	
 	@Column(nullable = false, updatable = false)
@@ -78,6 +74,9 @@ public class User
 	@ManyToOne
 	@JoinColumn( name = "userType")
 	private UserType userType;
+	
+//	@OneToMany (mappedBy = "driver",cascade = CascadeType.ALL)
+//	List<BranchDriver> branchDriver = new ArrayList<BranchDriver>();
 
 	public Long getId() {
 		return id;
@@ -127,22 +126,6 @@ public class User
 		this.city = city;
 	}
 
-	public double getLatitude() {
-		return latitude;
-	}
-
-	public void setLatitude(double latitude) {
-		this.latitude = latitude;
-	}
-
-	public double getLongitude() {
-		return longitude;
-	}
-
-	public void setLongitude(double longitude) {
-		this.longitude = longitude;
-	}
-
 	public int getStatus() {
 		return status;
 	}
@@ -190,5 +173,14 @@ public class User
 	public void setUserType(UserType userType) {
 		this.userType = userType;
 	}
+
+//	public List<BranchDriver> getBranchDriver() {
+//		return branchDriver;
+//	}
+//
+//	public void setBranchDriver(List<BranchDriver> branchDriver) {
+//		this.branchDriver = branchDriver;
+//	}
+	
 
 }

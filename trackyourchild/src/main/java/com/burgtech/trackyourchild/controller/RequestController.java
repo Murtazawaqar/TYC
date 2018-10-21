@@ -10,12 +10,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.burgtech.trackyourchild.model.Branch;
+import com.burgtech.trackyourchild.model.BranchDriver;
 import com.burgtech.trackyourchild.model.Child;
+import com.burgtech.trackyourchild.model.DriverTracking;
 import com.burgtech.trackyourchild.model.School;
 import com.burgtech.trackyourchild.model.User;
 import com.burgtech.trackyourchild.model.UserType;
 import com.burgtech.trackyourchild.pojos.AddBranchPojo;
 import com.burgtech.trackyourchild.pojos.AddChildPojo;
+import com.burgtech.trackyourchild.pojos.BranchDriverPojo;
+import com.burgtech.trackyourchild.pojos.DriverTrackingPojo;
 import com.burgtech.trackyourchild.pojos.ResponsePojo;
 import com.burgtech.trackyourchild.pojos.SigninPojo;
 import com.burgtech.trackyourchild.pojos.SignupPojo;
@@ -35,6 +39,10 @@ public class RequestController
 	ChildController childController;
 	@Autowired
 	private SchoolController schoolController;
+	@Autowired
+	private BranchDriverController branchDriverController;
+	@Autowired
+	private DriverTrackingController driverTrackingController;
 	
 	@PostMapping("/signin")
 	public ResponsePojo signIn(@Valid @RequestBody SigninPojo signin)
@@ -131,6 +139,52 @@ public class RequestController
 		}
 		
 		return new ResponsePojo("ERR_IVLD_02","Invalid School Name","");
+	}
+	
+	@PostMapping("/assignBranchDriver")
+	public ResponsePojo assignDriverToBranch(@Valid @RequestBody BranchDriverPojo branchDriverPojo)
+	{
+		BranchDriver branchDriver = new BranchDriver();
+		BeanUtils.copyProperties(branchDriverPojo,branchDriver);
+		
+		User driver = userController.findUserByEmail(branchDriverPojo.getDriver());
+		Branch branch = branchController.findBranchByName(branchDriverPojo.getBranch());
+		
+		if(driver != null && branch != null)
+		{	
+			branchDriver.setBranch(branch);
+			branchDriver.setDriver(driver);
+			
+			branchDriver = branchDriverController.saveBranchDriver(branchDriver);
+			
+			if(branchDriver != null)
+			{
+				return new ResponsePojo("SUCC_ADDBD_01","Driver assigned successfully","");
+			}
+			
+			return new ResponsePojo("ERR_DUPL_03","Driver already assigned to that Branch","");
+		}
+		
+		return new ResponsePojo("ERR_IVLD_01","Invalid Driver / Branch.","");
+	}
+	
+	@PostMapping("/addDriverCoordinates")
+	public ResponsePojo insertDriverCoordinates(@Valid @RequestBody DriverTrackingPojo driverTrackingPojo)
+	{
+		DriverTracking driverCoordinates = new DriverTracking();
+		BeanUtils.copyProperties(driverTrackingPojo,driverCoordinates);
+		
+		User driver = userController.findUserByEmail(driverTrackingPojo.getDriver());
+		
+		if(driver != null)
+		{
+			driverCoordinates.setDriver(driver);
+			driverTrackingController.saveCoordinated(driverCoordinates);
+			
+			return new ResponsePojo("SUCC_PDC_01","Coordinates Persisted.","");
+		}
+		
+		return new ResponsePojo("ERR_IVLD_01","Invalid Driver","");
 	}
 	
 	

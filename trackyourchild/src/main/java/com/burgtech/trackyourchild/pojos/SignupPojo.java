@@ -29,8 +29,6 @@ public class SignupPojo
 	private String lastName;
 	private String mobile;
 	private String cnic;
-	private double latitude;
-	private double longitude;
 	private int status;
 	private String userType;
 	
@@ -78,18 +76,6 @@ public class SignupPojo
 	}
 	public void setCnic(String cnic) {
 		this.cnic = cnic;
-	}
-	public double getLatitude() {
-		return latitude;
-	}
-	public void setLatitude(double latitude) {
-		this.latitude = latitude;
-	}
-	public double getLongitude() {
-		return longitude;
-	}
-	public void setLongitude(double longitude) {
-		this.longitude = longitude;
 	}
 	public int getStatus() {
 		return status;

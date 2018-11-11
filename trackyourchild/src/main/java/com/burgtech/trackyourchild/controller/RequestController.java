@@ -1,28 +1,43 @@
 package com.burgtech.trackyourchild.controller;
 
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.burgtech.trackyourchild.model.Branch;
 import com.burgtech.trackyourchild.model.BranchDriver;
 import com.burgtech.trackyourchild.model.Child;
 import com.burgtech.trackyourchild.model.DriverTracking;
+import com.burgtech.trackyourchild.model.Newsletter;
 import com.burgtech.trackyourchild.model.School;
 import com.burgtech.trackyourchild.model.User;
 import com.burgtech.trackyourchild.model.UserType;
 import com.burgtech.trackyourchild.pojos.AddBranchPojo;
 import com.burgtech.trackyourchild.pojos.AddChildPojo;
+import com.burgtech.trackyourchild.pojos.AddNewsletterPojo;
 import com.burgtech.trackyourchild.pojos.BranchDriverPojo;
+import com.burgtech.trackyourchild.pojos.DeleteChildPojo;
+import com.burgtech.trackyourchild.pojos.DeleteSchoolPojo;
+import com.burgtech.trackyourchild.pojos.DeleteUserPojo;
 import com.burgtech.trackyourchild.pojos.DriverTrackingPojo;
 import com.burgtech.trackyourchild.pojos.ResponsePojo;
 import com.burgtech.trackyourchild.pojos.SigninPojo;
 import com.burgtech.trackyourchild.pojos.SignupPojo;
+import com.burgtech.trackyourchild.repository.BranchRepository;
+import com.burgtech.trackyourchild.repository.ChildRepository;
 import com.burgtech.trackyourchild.repository.UserRepository;
 
 @RestController
@@ -30,19 +45,28 @@ import com.burgtech.trackyourchild.repository.UserRepository;
 public class RequestController 
 {
 	@Autowired
-	UserController userController;
+	private UserController userController;
 	@Autowired
-	UserTypeController userTypeController;
+	private UserTypeController userTypeController;
 	@Autowired
-	BranchController branchController;
+	private BranchController branchController;
 	@Autowired
-	ChildController childController;
+	private ChildController childController;
 	@Autowired
 	private SchoolController schoolController;
 	@Autowired
 	private BranchDriverController branchDriverController;
 	@Autowired
 	private DriverTrackingController driverTrackingController;
+	@Autowired
+	private NewsletterController newsletterController;
+	
+	//Test method
+	@GetMapping("/test")
+	public String testing()
+	{
+		return "Hello World!";
+	}	
 	
 	@PostMapping("/signin")
 	public ResponsePojo signIn(@Valid @RequestBody SigninPojo signin)
@@ -187,33 +211,126 @@ public class RequestController
 		return new ResponsePojo("ERR_IVLD_01","Invalid Driver","");
 	}
 	
+	@PostMapping("/addNewsletter")
+	public ResponsePojo addNewsletter(@Valid @RequestBody AddNewsletterPojo newsletterPojo)
+	{
+		Newsletter newsletter = new Newsletter();
+		BeanUtils.copyProperties(newsletterPojo, newsletter);
+		
+		LocalDate startDate = LocalDate.parse (newsletterPojo.getStartDate());
+		LocalDate endDate = LocalDate.parse(newsletterPojo.getEndDate());
+			
+		newsletter.setStartDate(startDate);
+		newsletter.setEndDate(endDate);
+			
+		if(startDate != null && endDate != null)
+		{
+			newsletter = newsletterController.saveNewsletter(newsletter);
+		
+			if(newsletter != null)
+			{
+				return new ResponsePojo("SUCC_AN_01","Nesletter successfully added.","");
+			}
+			
+			else
+			{
+				return new ResponsePojo("ERR_01","Unknown Error","");
+			}
+		}
+		
+		return new ResponsePojo("ERR_IVDF_01","Invalid Date Format Provided.","");
+	}
 	
+	@DeleteMapping("/user")
+	public ResponsePojo deleteUser(@Valid @RequestBody DeleteUserPojo user)
+	{
+		boolean check = userController.deleteUser(user.getEmail(),user.getCode());
+		
+		if(check)
+		{
+			return new ResponsePojo("SUCC_DU_01","User successfully deleted.","");
+		}
+		
+		return new ResponsePojo("ERR_IVU","User not found.","");
+	}
 	
+	@DeleteMapping("/school")
+	public ResponsePojo deleteSchool(@Valid @RequestBody DeleteSchoolPojo schoolPojo)
+	{
+		School school = schoolController.findSchoolByName(schoolPojo.getName());
+		
+		if(school != null)
+		{
+			List<Branch> branches = branchController.findBranchBySchool(school); 
+			
+			for (Branch branch : branches) 
+			{
+				branchController.deleteBranch(branch);
+			}
+			
+			return new ResponsePojo("SUCC_DS_01","School & Branches successfully deleted.","");
+		}
+		
+		return new ResponsePojo("ERR_IVS","Invalid School Provided.","");
+	}
 	
+	@DeleteMapping("/child")
+	public ResponsePojo deleteChild(@Valid @RequestBody DeleteChildPojo childPojo)
+	{
+		User parent = userController.findUserByEmail(childPojo.getParentEmail());
+		
+		boolean check;
+		
+		if(parent != null)
+		{
+			check = childController.deleteChild(childPojo.getChildId(), parent);
+			
+			if(check)
+			{
+				return new ResponsePojo("SUCC_DC_01","Child successfully deleted.","");
+			}
+			
+			return new ResponsePojo("ERR_IVC_01","Child not found.","");
+		}
+		
+		return new ResponsePojo("ERR_IVU","Parent not found.","");
+	}
 	
+	@DeleteMapping("/newsletter")
+	public ResponsePojo deleteNewsletter(@Valid @RequestBody AddNewsletterPojo newsletter)
+	{
+		boolean check = newsletterController.deleteNewsletter(newsletter.getId(), newsletter.getName());
+		
+		if(check)
+		{
+			return new ResponsePojo("SUCC_DN_01","Newsletter successfully deleted.","");
+		}
+		
+		return new ResponsePojo("ERR_IVN","Newsletter not found.","");
+	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	@DeleteMapping("/branchDriver")
+	public ResponsePojo deleteBranchDriver(@Valid @RequestBody BranchDriverPojo branchDriver)
+	{
+		//Branch name and Driver Email is required
+		
+		Branch branch = branchController.findBranchByName(branchDriver.getBranch());
+		User driver = userController.findUserByEmail(branchDriver.getDriver());
+		
+		boolean check;
+		
+		if(branch != null && driver != null)
+		{
+			check = branchDriverController.deleteBranchDriver(branch, driver);
+			
+			if(check)
+			{
+				return new ResponsePojo("SUCC_DBD_01","Driver assignemnt successfully deleted.","");
+			}
+			
+			return new ResponsePojo("ERR_01","Unknown Error","");
+		}
+		
+		return new ResponsePojo("ERR_IVBD","Branch/Driver not found.","");
+	}
 }

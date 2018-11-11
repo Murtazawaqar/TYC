@@ -18,4 +18,23 @@ public class ChildController
 	{
 		return childRepository.save(child);
 	}
+	
+	public Child findChildByParent(Long childId, User parent)
+	{
+		return childRepository.findByIdAndParent(childId,parent);
+	}
+	
+	public boolean deleteChild(Long childId, User parent)
+	{
+		Child child = childRepository.findByIdAndParent(childId, parent);
+		
+		if(child != null)
+		{
+			childRepository.delete(child);
+			return true;
+		}
+		
+		return false;
+	}
+	
 }

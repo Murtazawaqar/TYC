@@ -22,7 +22,6 @@ import com.burgtech.trackyourchild.repository.UserRepository;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/tyc")
 public class UserController 
 {
 	@Autowired
@@ -30,13 +29,6 @@ public class UserController
 	
 	@Autowired
 	UserTypeController userTypeController;
-	
-	//Test method
-	@GetMapping("/test")
-	public String testing()
-	{
-		return "Hello World!";
-	}
 	
 	//Authenticating user
 	public User findUserByEmailAndPassword(String email, String password)
@@ -54,6 +46,18 @@ public class UserController
 		return userRepository.save(user);
 	}
 	
+	public boolean deleteUser(String email, String code)
+	{
+		User user = this.findUserByEmail(email);
+		
+		if(user != null)
+		{
+			userRepository.delete(user);
+			return true;
+		}
+		
+		return false;
+	}
 	
 	//Get all users
 	@GetMapping("/users")

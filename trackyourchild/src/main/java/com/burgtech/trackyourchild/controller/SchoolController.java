@@ -21,4 +21,9 @@ public class SchoolController
 	{
 		return schoolRepository.save(school);
 	}
+	
+	public void deleteSchool(School school)
+	{
+		schoolRepository.delete(school);
+	}
 }

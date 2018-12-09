@@ -20,9 +20,19 @@ public class BranchController
 		return branchRepository.findByName(name);
 	}
 	
+	public Branch findBranchById(Long id)
+	{
+		return branchRepository.findById(id).orElse(null);
+	}
+	
 	public List<Branch> findBranchBySchool(School school)
 	{
 		return branchRepository.findBySchool(school);
+	}
+	
+	public List<Branch> fetchAllBranches()
+	{
+		return branchRepository.findAll();
 	}
 	
 	public Branch addNewBranch(Branch branch)

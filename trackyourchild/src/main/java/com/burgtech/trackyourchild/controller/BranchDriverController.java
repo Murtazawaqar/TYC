@@ -1,5 +1,7 @@
 package com.burgtech.trackyourchild.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,6 +15,11 @@ public class BranchDriverController
 {
 	@Autowired
 	private BranchDriverRepository branchDriverRepository;
+	
+	public List<BranchDriver> findByBranch(Branch branch)
+	{
+		return branchDriverRepository.findByBranch(branch);
+	}
 	
 	public BranchDriver saveBranchDriver(BranchDriver branchDriver)
 	{

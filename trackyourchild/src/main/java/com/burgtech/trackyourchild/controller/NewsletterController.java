@@ -1,5 +1,7 @@
 package com.burgtech.trackyourchild.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,6 +13,16 @@ public class NewsletterController
 {
 	@Autowired
 	NewsletterRepository newsletterRepository;
+	
+	public List<Newsletter> fetchAllNewsletters()
+	{
+		return newsletterRepository.findAll();
+	}
+	
+	public List<Newsletter> findNewsletterByStatus(Integer status)
+	{
+		return newsletterRepository.findByStatus(status);
+	}
 	
 	public Newsletter saveNewsletter(Newsletter newsletter)
 	{

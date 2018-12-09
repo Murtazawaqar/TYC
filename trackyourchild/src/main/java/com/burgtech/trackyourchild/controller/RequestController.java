@@ -1,5 +1,6 @@
 package com.burgtech.trackyourchild.controller;
 
+import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.Date;
@@ -11,9 +12,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -66,7 +70,79 @@ public class RequestController
 	public String testing()
 	{
 		return "Hello World!";
-	}	
+	}
+	
+	@GetMapping("/user/{email}")
+	@ResponseBody
+	public User getUserDetails(@PathVariable String email)
+	{
+		return userController.findUserByEmail(email);
+	}
+	
+	@GetMapping("/school/{name}")
+	@ResponseBody
+	public School getSchoolDetails(@PathVariable String name)
+	{
+		return schoolController.findSchoolByName(name);
+	}
+	
+	@GetMapping("/school/fetchAll")
+	@ResponseBody
+	public List<School> getAllSchoolDetails()
+	{
+		return schoolController.fetchAllSchools();
+	}
+	
+	@GetMapping("/branch/{id}")
+	@ResponseBody
+	public Branch getBranchDetails(@PathVariable Long id)
+	{
+		return branchController.findBranchById(id);
+	}
+	
+	@GetMapping("/branch/schoolId/{schoolId}")
+	@ResponseBody
+	public List<Branch> getAllBranchDetails(@PathVariable Long schoolId)
+	{
+		School school = schoolController.findSchoolById(schoolId);
+		
+		if(school != null)
+		{
+			return branchController.findBranchBySchool(school);
+		}
+
+		return null;
+	}
+	
+	@GetMapping("/branch/fetchAll")
+	@ResponseBody
+	public List<Branch> getAllBranchDetails()
+	{
+		return branchController.fetchAllBranches();
+	}
+	
+	@GetMapping("newsletter/fetchAll")
+	@ResponseBody
+	public List<Newsletter> getAllNewsletters()
+	{
+		return newsletterController.fetchAllNewsletters();
+	}
+	
+	@GetMapping("newsletter/{status}")
+	@ResponseBody
+	public List<Newsletter> getNewslettersByStatus(@PathVariable Integer status)
+	{
+		return newsletterController.findNewsletterByStatus(status);
+	}
+	
+	@GetMapping("branchDriver/{branchId}")
+	@ResponseBody
+	public List<BranchDriver> findDriversByBranch(@PathVariable Long branchId)
+	{
+		Branch branch = branchController.findBranchById(branchId);
+		
+		return branch != null ? branchDriverController.findByBranch(branch):null; 
+	}
 	
 	@PostMapping("/signin")
 	public ResponsePojo signIn(@Valid @RequestBody SigninPojo signin)
@@ -215,9 +291,13 @@ public class RequestController
 	public ResponsePojo addNewsletter(@Valid @RequestBody AddNewsletterPojo newsletterPojo)
 	{
 		Newsletter newsletter = new Newsletter();
-		BeanUtils.copyProperties(newsletterPojo, newsletter);
+//		BeanUtils.copyProperties(newsletterPojo, newsletter);
 		
-		LocalDate startDate = LocalDate.parse (newsletterPojo.getStartDate());
+		newsletter.setName(newsletterPojo.getName());
+		newsletter.setContent(newsletterPojo.getContent());
+		newsletter.setStatus(newsletterPojo.getStatus());
+		
+		LocalDate startDate = LocalDate.parse(newsletterPojo.getStartDate());
 		LocalDate endDate = LocalDate.parse(newsletterPojo.getEndDate());
 			
 		newsletter.setStartDate(startDate);

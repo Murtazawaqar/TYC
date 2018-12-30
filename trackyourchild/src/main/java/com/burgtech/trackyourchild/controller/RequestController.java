@@ -72,11 +72,33 @@ public class RequestController
 		return "Hello World!";
 	}
 	
+	@GetMapping("/users")
+	public List<User> fetchAllUsers()
+	{
+		return userController.getAllUsers();
+	}
+	
+	@GetMapping("/users/{type}")
+	@ResponseBody
+	public List<User> getUsersByType(@PathVariable String type)
+	{
+		UserType userType = userTypeController.findUserTypeByCode(type);
+		return userController.getUserByType(userType);
+	}
+	
 	@GetMapping("/user/{email}")
 	@ResponseBody
 	public User getUserDetails(@PathVariable String email)
 	{
 		return userController.findUserByEmail(email);
+	}
+	
+	@GetMapping("/child/{parentEmail}")
+	@ResponseBody
+	public List<Child> getChildByParentEmail(@PathVariable String parentEmail)
+	{
+		User parent = userController.findUserByEmail(parentEmail);
+		return childController.findChildByParent(parent);	
 	}
 	
 	@GetMapping("/school/{name}")

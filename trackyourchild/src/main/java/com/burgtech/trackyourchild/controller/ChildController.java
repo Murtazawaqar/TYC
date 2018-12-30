@@ -1,5 +1,7 @@
 package com.burgtech.trackyourchild.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,6 +19,11 @@ public class ChildController
 	public Child createNewChild(Child child)
 	{
 		return childRepository.save(child);
+	}
+	
+	public List<Child> findChildByParent(User parent)
+	{
+		return childRepository.findByParent(parent);
 	}
 	
 	public Child findChildByParent(Long childId, User parent)

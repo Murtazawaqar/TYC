@@ -10,6 +10,7 @@ public class AddChildPojo
 	private Long id;
 	private String firstName;
 	private String lastName;
+	private String rollNo;
 	private Date dob;
 	private String gender;
 	private double latitude;
@@ -35,6 +36,12 @@ public class AddChildPojo
 	}
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+	public String getRollNo() {
+		return rollNo;
+	}
+	public void setRollNo(String rollNo) {
+		this.rollNo = rollNo;
 	}
 	public Date getDob() {
 		return dob;

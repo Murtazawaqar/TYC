@@ -36,6 +36,16 @@ public class UserController
 		return userRepository.findByEmailAndPassword(email, password);
 	}
 	
+	public List<User> getAllUsers()
+	{
+		return userRepository.findAll();
+	}
+	
+	public List<User> getUserByType(UserType userType)
+	{
+		return userRepository.findByUserType(userType);
+	}
+	
 	public User findUserByEmail(String email)
 	{
 		return userRepository.findByEmail(email);
@@ -57,13 +67,6 @@ public class UserController
 		}
 		
 		return false;
-	}
-	
-	//Get all users
-	@GetMapping("/users")
-	public List<User> getAllUsers()
-	{
-		return userRepository.findAll();
 	}
 	
 //	//Add new user

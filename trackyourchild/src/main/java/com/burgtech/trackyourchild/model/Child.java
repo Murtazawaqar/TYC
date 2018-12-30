@@ -39,6 +39,10 @@ public class Child
 	@NotBlank
 	private String lastName;
 	
+	@NotBlank
+	@Column(nullable = false, unique = true)
+	private String rollNo;
+	
 	private Date dob;
 	
 	private String gender;
@@ -95,6 +99,14 @@ public class Child
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	public String getRollNo() {
+		return rollNo;
+	}
+
+	public void setRollNo(String rollNo) {
+		this.rollNo = rollNo;
 	}
 
 	public Date getDob() {

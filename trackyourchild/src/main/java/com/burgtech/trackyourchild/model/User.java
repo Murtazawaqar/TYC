@@ -53,8 +53,7 @@ public class User
 	@Column(nullable = false, unique = true)
 	private String mobile;
 	
-	@NotBlank
-	@Column(nullable = false, unique = true)
+	@Column(unique = true)
 	private String cnic;
 	
 	private String city;
